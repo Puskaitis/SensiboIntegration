@@ -91,6 +91,7 @@ metadata {
             command "highFan"
             command "quietFan"
             command "strongFan"
+	    command "autoFan"
 //            command "fullswing"
             // command "setAirConditionerMode"
             command "toggleClimateReact"
