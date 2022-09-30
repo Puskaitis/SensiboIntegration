@@ -557,8 +557,7 @@ void raiseTemperature() {
             setDrySetpoint(Setpoint)
             break;
         case "auto":
-            setHeatingSetpoint(Setpoint)
-            setCoolingSetpoint(Setpoint)
+            setAutoSetpoint(Setpoint)
             break;
         default:
         	break;
