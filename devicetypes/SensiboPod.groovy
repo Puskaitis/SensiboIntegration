@@ -1,7 +1,7 @@
 /**
  *  Sensibo Device Type Handler
  *
- *  Copyright 2021 Paul Hutton
+ *  Copyright 2021 Mike Orbon
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -13,7 +13,7 @@
  *  for the specific language governing permissions and limitations under the License.
  *
  *  Date          Comments
- *  2021-02-15	  Forked from Bryan Li's port from ST	    
+ *  2022-09-30	  Forked from velowulf's port from Brian Li	    
  *
  */
 
@@ -25,7 +25,7 @@ preferences {
 }
 
 metadata {
-	definition (name: "SensiboPod", namespace: "velowulf", author: "Paul Hutton", oauth: false) {
+	definition (name: "SensiboPod", namespace: "Puskaitis", author: "Mike Orbon", oauth: false) {
             // capability "Actuator"
             capability "Battery"
             capability "Health Check"
@@ -97,6 +97,7 @@ metadata {
             command "toggleClimateReact"
             command "setCoolingSetpoint", ["number"]
             command "setHeatingSetpoint", ["number"]
+            command "setAutoSetpoint", ["number"]
             command "setClimateReact", [
                 [
                     name:"State", type: "ENUM", constraints: [
@@ -670,6 +671,33 @@ def setFanSetpoint(temp) {
         
     	if (device.currentState("switch").value == "off") { generateSwitchEvent("on") }
         generateModeEvent("fan")
+         
+        sendEvent(name: 'thermostatSetpoint', value: temp, displayed: false)
+    	generateSetTempEvent(temp)
+        
+        // generateStatusEvent()
+    	refresh()
+    }
+    else {
+       	generateErrorEvent()
+        // generateStatusEvent()
+    }
+}
+
+// Set Temperature
+def setAutoSetpoint(temp) {
+    displayTraceLog( "setAutoSetpoint() called")
+
+    temp = temp.toInteger()
+    displayDebugLog("setTemperature : " + temp  ) 
+    
+    def result = parent.setACStates(this, device.deviceNetworkId , "on", "auto", temp, device.currentState("fanLevel").value, device.currentState("swing").value, device.currentState("temperatureUnit").value)
+    
+    if (result) {
+    	displayInfoLog( "Auto temperature changed to " + temp + " for " + device.deviceNetworkId)
+        
+    	if (device.currentState("switch").value == "off") { generateSwitchEvent("on") }
+        generateModeEvent("auto")
          
         sendEvent(name: 'thermostatSetpoint', value: temp, displayed: false)
     	generateSetTempEvent(temp)
