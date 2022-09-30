@@ -97,6 +97,7 @@ metadata {
             command "toggleClimateReact"
             command "setCoolingSetpoint", ["number"]
             command "setHeatingSetpoint", ["number"]
+            command "setFanSetpoint", ["number"]
             command "setClimateReact", [
                 [
                     name:"State", type: "ENUM", constraints: [
@@ -556,8 +557,7 @@ void raiseTemperature() {
             setDrySetpoint(Setpoint)
             break;
         case "auto":
-            setHeatingSetpoint(Setpoint)
-            setCoolingSetpoint(Setpoint)
+            setFanSetpoint(Setpoint)
             break;
         default:
         	break;
